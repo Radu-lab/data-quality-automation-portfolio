@@ -1,0 +1,37 @@
+models:
+  - name: stg_flight_data2026
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - entity_name
+              - type_model
+              - entry_date
+    columns:
+      - name: DIST_FLOWN_KM
+        tests:
+          - not_null
+      - name: DIST_DIRECT_KM
+        tests:
+          - not_null
+      - name: DIST_ACHIEVED_KM
+        tests:
+          - not_null
+  - name: monthly_results
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - entity_name
+              - type_model
+              - month_num
+    columns:
+      - name: total_flown
+        tests:
+          - not_null
+      - name: total_direct
+        tests:
+          - not_null
+      - name: total_achieved
+        tests:
+          - not_null

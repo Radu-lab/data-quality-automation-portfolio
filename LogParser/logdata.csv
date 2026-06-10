@@ -1,0 +1,10 @@
+TimeoutError: API call exceeded 10s,4
+Database connection timeout,3
+FileNotFoundError: config.yaml,3
+Permission denied accessing resource,3
+ValueError: invalid input data,2
+TypeError in processing request,2
+Failed login attempt username=admin invalid credentials,1
+Disk space below 10%,1
+JSONDecodeError: malformed response,1
+Connection refused by external service,1

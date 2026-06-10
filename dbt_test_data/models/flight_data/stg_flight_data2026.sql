@@ -1,0 +1,12 @@
+SELECT
+    YEAR,
+    MONTH_NUM,
+    MONTH_MON,
+    ENTRY_DATE,
+    ENTITY_NAME,
+    ENTITY_TYPE,
+    TYPE_MODEL,
+    DIST_FLOWN_KM,
+    DIST_DIRECT_KM,
+    DIST_ACHIEVED_KM
+from {{ref('flight_data2026')}}
