@@ -224,3 +224,7 @@ logs/
 *.duckdb.wal
 .idea
 env/
+gx/
+.venv/
+__pycache__/
+*.pyc
