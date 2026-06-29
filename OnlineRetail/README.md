@@ -35,5 +35,6 @@ The dataset CSV sits next to main.py. The report is generated at gx/uncommitted/
 
 Files:
 main.py — profiling + Great Expectations pipeline
-data_quality_test_strategy.md — test scenarios and KPIs
+data_quality_test_strategy.md — test scenarios and KPIs (narrative)
+scenarios.yaml - test scenarios as data consumed by main.py
 requirements.txt — dependencies

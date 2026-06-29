@@ -1,0 +1,63 @@
+- test_id: Test-01
+  kpi: KPI-01
+  dimension: Completeness
+  priority: High
+  type: not_null
+  columns: [customer_id, order_date, product_id, quantity, price]
+
+- test_id: Test-02
+  kpi: KPI-02
+  dimension: Completeness
+  priority: High
+  type: not_null
+  columns: [review_score]
+  mostly: 0.90
+
+- test_id: Test-03
+  kpi: KPI-03
+  dimension: Completeness
+  priority: Medium
+  type: not_null
+  columns: [gender]
+  mostly: 0.90
+
+- test_id: Test-04
+  kpi: KPI-04
+  dimension: Uniqueness
+  priority: High
+  type: unique
+  columns: [customer_id,product_id]
+
+- test_id: Test-05
+  kpi: KPI-05
+  dimension: Validity
+  priority: High
+  type: between
+  columns: [quantity, price]
+  min_value: 0
+  strict_min: True
+  
+- test_id: Test-06
+  kpi: KPI-06
+  dimension: Validity
+  priority: High
+  type: between
+  columns: [review_score]
+  min_value: 1
+  max_value: 5
+
+- test_id: Test-07a
+  kpi: KPI-07
+  dimension: Validity
+  priority: Medium
+  type: in_set
+  columns: [payment_method]
+  value_set: [Credit Card, Bank Transfer, Cash on Delivery]
+
+- test_id: Test-07b
+  kpi: KPI-07
+  dimension: Validity
+  priority: Medium
+  type: in_set
+  columns: [gender]
+  value_set: [F, M]

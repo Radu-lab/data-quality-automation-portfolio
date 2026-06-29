@@ -5,10 +5,13 @@
 **Rows:** 1,000
 **Columns:** 13  
 **Date:** June 25, 2026
+**Modified Date:** June 29,2026
 
 ## 1. Dataset Overview
 This dataset contains sales transactions with customer, product, and review information. It has notable data quality issues, particularly missing values in `review_score` and `gender`, and potential uniqueness problems with `product_id`.
 The findings were done profiling the data with pandas.
+
+The executable rules rom these scenarios are defined in `scenarios.yaml` and applied via Great Expectations in `main.py`.
 
 ## 2. Quality KPIs
 
@@ -65,8 +68,8 @@ The findings were done profiling the data with pandas.
 **KPI ID:** `KPI-05`  
 **Objective:** Validate that numerical fields contain logical positive values.  
 **Columns:** `quantity`, `price`  
-**Expected Result:** `quantity` > 0 and `price` > 0.  
-**GE Expectation:** `ExpectColumnValuesToBeBetween(min_value=0)`  
+**Expected Result:** `quantity` >0 and `price` > 0.  
+**GE Expectation:** `ExpectColumnValuesToBeBetween(min_value=0,strict_min=True)`  
 **Priority:** High
 
 **Test-06**  

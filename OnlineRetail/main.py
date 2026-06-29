@@ -1,6 +1,7 @@
 import great_expectations as gx
 import pandas as pd
 from great_expectations.checkpoint import UpdateDataDocsAction
+import yaml
 
 
 df = pd.read_csv("synthetic_online_retail_data.csv")
@@ -48,63 +49,29 @@ batch = batch_definition.get_batch(batch_parameters=batch_parameters)
 suite = gx.ExpectationSuite(name="retail_suite")
 suite = context.suites.add_or_update(suite)
 
-#define expectations
-#Test-01
-meta_01 = {"test_id": "Test-01",
-           "kpi": "KPI-01",
-           "dimension": "Completeness",
-           "priority": "High"}
-for col in ["customer_id","order_date","product_id","quantity","price"]:
-    suite.add_expectation(gx.expectations.ExpectColumnValuesToNotBeNull(meta = meta_01,column = col))
+with open("scenarios.yaml") as f:
+    scenarios = yaml.safe_load(f)
 
-#Test-02
-meta_02 = {"test_id": "Test-02",
-           "kpi": "KPI-02",
-           "dimension": "Completeness",
-           "priority": "High"}
-suite.add_expectation(gx.expectations.ExpectColumnValuesToNotBeNull(meta = meta_02,mostly = 0.90,
-                                                                    column = "review_score"))
-#Test-03
-meta_03 = {"test_id": "Test-03",
-           "kpi": "KPI-03",
-           "dimension": "Completeness",
-           "priority": "Medium"}
-suite.add_expectation(gx.expectations.ExpectColumnValuesToNotBeNull(meta = meta_03,mostly=0.90,column = "gender"))
+    for s in scenarios:
+        meta = {"test_id":s["test_id"],
+                "kpi":s["kpi"],
+                "dimension":s["dimension"],
+                "priority":s["priority"]}
+        for col in s["columns"]:
+            if s["type"] == "not_null":
+                exp = gx.expectations.ExpectColumnValuesToNotBeNull(column = col, meta=meta,mostly=s.get("mostly",1.0))
+            elif s["type"] == "between":
+                exp = gx.expectations.ExpectColumnValuesToBeBetween(column = col, meta = meta,min_value = s.get("min_value"),
+                                                                    max_value =s.get("max_value"),
+                                                                    strict_min = s.get("strict_min",False))
+            elif s["type"] == "unique":
+                exp = gx.expectations.ExpectColumnValuesToBeUnique(column= col, meta = meta)
+            elif s["type"] == "in_set":
+                exp = gx.expectations.ExpectColumnValuesToBeInSet(column = col, meta = meta, value_set = s["value_set"])
+            else:
+                raise ValueError(f"Unknown type: {s['type']} in {s['test_id']}")
+            suite.add_expectation(exp)
 
-#Test-04
-meta_04 = {"test_id": "Test-04",
-           "kpi": "KPI-04",
-           "dimension": "Uniqueness",
-           "priority": "High"}
-for col in ["customer_id","product_id"]:
-    suite.add_expectation(gx.expectations.ExpectColumnValuesToBeUnique(meta = meta_04,column = col))
-
-#Test-05
-meta_05 = {"test_id": "Test-05",
-           "kpi": "KPI-05",
-           "dimension": "Validity",
-           "priority": "High"}
-for col in ["quantity","price"]:
-        suite.add_expectation(gx.expectations.ExpectColumnValuesToBeBetween(meta = meta_05,min_value = 0,column = col))
-
-#Test-06
-meta_06 = {"test_id": "Test-06",
-           "kpi": "KPI-06",
-           "dimension": "Validity",
-           "priority": "High"}
-suite.add_expectation(gx.expectations.ExpectColumnValuesToBeBetween(meta = meta_06,min_value = 1,
-                                                                    max_value= 5,column = "review_score"))
-
-#Test-07
-meta_07 = {"test_id": "Test-07",
-           "kpi": "KPI-07",
-           "dimension": "Validity",
-           "priority": "High"}
-suite.add_expectation(gx.expectations.ExpectColumnValuesToBeInSet(meta = meta_07,column="gender", 
-                                                                  value_set=["F", "M"]))
-suite.add_expectation(gx.expectations.ExpectColumnValuesToBeInSet(meta = meta_07,
-                                                                  column="payment_method",
-                                                                value_set=['Credit Card', 'Bank Transfer', 'Cash on Delivery']))
 definition_name = "validation"
 validation_definition = gx.ValidationDefinition(data = batch_definition,
                                                 suite = suite,
